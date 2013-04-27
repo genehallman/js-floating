@@ -1,0 +1,109 @@
+<html>
+  <head>
+    <title>Labs Portal Floating Test</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <style>
+      body {
+        background-color:#eee;
+      }
+      header {
+        position:relative;
+        width:860px;
+        height:642px;
+        margin:0 auto;
+        padding:50px;
+      }
+      .floating {
+        position:absolute;
+        width:200px;
+        height:200px;
+      }
+      .floating img {
+        opacity:0.4;
+        filter:alpha(opacity=40);
+      }
+      #float1 {left:320px;top:130px;border:3px solid red;background-color:rgba(255,0,0,0.6);}
+      #float2 {left:100px;top:150px;border:3px solid green;background-color:rgba(0,255,0,0.6);}
+      #float3 {left:300px;top:300px;border:3px solid blue;background-color:rgba(0,0,255,0.6)}
+      #float4 {left:500px;top:200px;border:3px solid purple;background-color:rgba(255,0,255,0.6)}
+      #float5 {left:400px;top:280px;border:3px solid yellow;background-color:rgba(0,255,255,0.6)}
+      #background {
+        background: url('browser.png');
+        background-size:860px 642px;
+        box-shadow:0px 0px 20px rgba(70, 70, 70, 0.6);
+        position:absolute;
+        left:50px;
+        top:50px;
+        width:860px;
+        height:642px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div id="background"></div>
+      <div id="float1" class="floating" data-float-height="1"><img src="floater.png"/></div>
+      <div id="float2" class="floating" data-float-height="2"><img src="floater.png"/></div>
+      <div id="float3" class="floating" data-float-height="4"><img src="floater.png"/></div>
+      <div id="float4" class="floating" data-float-height="6"><img src="floater.png"/></div>
+      <div id="float5" class="floating" data-float-height="10"><img src="floater.png"/></div>
+    </header>
+    <script>
+      var MAX_ADJUST_X = 40;
+      var MAX_ADJUST_Y = 10;
+      var update = function(ev) {
+        var savePositions
+        if (!ev) {
+          $('header .floating').each(function(index, el) {
+            var $el = $(el);
+            if (!$el.attr('data-orig-top')) {
+              var left = $el.position().left;
+              var top = $el.position().top;
+              $el.attr('data-orig-left', left);
+              $el.attr('data-orig-top', top);
+            }
+          });
+        }
+        ev = ev || {};
+        var wWidth = $(window).innerWidth();
+        var wHeight = $(window).innerHeight();
+        var mX = ev.clientX || wWidth / 2;
+        var mY = ev.clientY || wHeight / 2;
+
+        $('header .floating').each(function(index, el) {
+          var $el = $(el);
+          var height = parseInt($el.attr('data-float-height'));
+          var left = parseInt($el.attr('data-orig-left'));
+          var top = parseInt($el.attr('data-orig-top'));
+          
+          var leftAdjust = ((mX / wWidth) - 0.5) * 2 * MAX_ADJUST_X * height;
+          var topAdjust = ((mY / wHeight) - 0.5) * 2 * MAX_ADJUST_Y * height;
+          
+          $el.css('box-shadow', ''+(height*10)+'px '+(height*10)+'px 20px rgba(70, 70, 70, 0.2)');
+          $el.css('z-index', height);
+          $el.css('left', '' + (left - leftAdjust) + 'px');
+          $el.css('top', '' + (top - topAdjust) + 'px');
+        });
+      };
+
+      $(window).mousemove(function(ev) {
+        update(ev);
+      });
+
+      update();
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
